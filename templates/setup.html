@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+
+
+{% endblock %}
+{% block body %}
+
+<div id="setup2">
+        {% if authdetails|length < 1 %}
+            <h4 id="error">There are no authentication details added. do this first.</h4>
+
+        {% elif hosts|length < 1 %}
+    <h4 id="error">There are no hosts added. Add hosts first.</h4>
+        {% else %}
+
+    <table class="table">
+        <tr>
+        <th>Hostname</th>
+        <th>Authentication profile to use</th>
+        </tr>
+        <tr>
+        {% for hosts in hosts %}
+        <td>{{ hosts.hostname }}</td>
+        <td><select id="{{ hosts.id }}" name="{{ hosts.id }}">
+            {% for authdetails in authdetails %}
+            <option value="{{ authdetails.nickname }}">{{ authdetails.nickname }}</option>
+            {% endfor %}
+        </td>
+        </select>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+        {% endif %}
+{% endblock %}
+

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_BINDS'] = { 'main' : 'sqlite:///hosts.db', 'auth' : 'sqlite:///auth.db' }
+app.config['SQLALCHEMY_BINDS'] = { 'main' : 'sqlite:///hosts.db', 'auth' : 'sqlite:///auth.db', 'setup' : 'sqlite:///setup.db' }
 
 db = SQLAlchemy(app)
 
@@ -29,9 +29,16 @@ class AuthDB(db.Model):
     secret = db.Column(db.String(200), nullable=True)
 
     def __repr__(self):
-        #return '<id %r>,<nickname %r >, <devicetype %r>, <username %r>, <password %r>, <secret %r>' % ( self.id, self.nickname, self.devicetype, self.username, self.password, self.secret)
         return '%r,%r,%r,%r,%r' % ( self.id, self.nickname, self.username, self.password, self.secret)
-        #return '<Nickname %r' % self.id
+
+class SetupDB(db.Model):
+    __bind_key__ = 'setup'
+    id = db.Column(db.Integer, primary_key=True)
+    hostname = db.Column(db.String(200), nullable=False)
+    nickname = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return '%r,%r,%r' % ( self.id, self.hostname, self.nickname)
 
 @app.route('/', methods=['POST', 'GET'])
 def index_main():
@@ -85,6 +92,14 @@ def index_hosts():
         return render_template('hosts.html', hosts=hosts)
 
 
+@app.route('/setup', methods=['POST', 'GET'])
+def setup():
+    hosts = HostDB.query.order_by(HostDB.id).all()
+    AuthDetails = AuthDB.query.order_by(AuthDB.id).all()
+    Setup = SetupDB.query.order_by(SetupDB.id).all()
+    return render_template('setup.html', authdetails=AuthDetails, hosts=hosts, setup=Setup)
+
+
 @app.route('/auth_delete/<int:id>')
 def delete_auth(id):
     auth_to_delete = AuthDB.query.get_or_404(id)
@@ -106,7 +121,6 @@ def delete_host(id):
         return redirect('/hosts/')
     except Exception as e:
         return str(e)
-
 
 
 

@@ -7,7 +7,28 @@
 {% endblock %}
 {% block body %}
 
-<div id="hosts">
+<div id="hosts2">
+<form action="/hosts/" method="POST">
+    <table class="table">
+        <tr>
+            <th>IP address or hostname</th>
+            <th>Device type</th>
+            <th>SSH port(22 by default)</th>
+
+        </tr>
+        <tr>
+    <th><input type="text" name="newhost" id="newhost"></th>
+        <th><select id="devicetype" name="devicetype"><option value="cisco_ios">cisco ios</option><option value="junos">junos</option></select></th>
+    <th><input type="text" name="port" id="port" value="22"></th>
+
+    <th><input type="submit" value="Add host to DB"></th>
+        </tr>
+    </table>
+</form>
+</div>
+
+
+<div id="hosts3">
 
 
 
@@ -16,7 +37,7 @@
     <h4>There are no hosts added. create one.</h4>
 
     {% else %}
-    <table>
+    <table class="table">
         <tr>
             <th>ID</th>
             <th>Hostname</th>
@@ -37,15 +58,7 @@
         {% endfor %}
     </table>
     {% endif %}
-<form action="/hosts/" method="POST">
-    <table>
-    <th><input type="text" name="newhost" id="newhost"></th>
-        <th><select id="devicetype" name="devicetype"><option value="cisco_ios">cisco ios</option><option value="junos">junos</option></select></th>
-    <th><input type="text" name="port" id="port" value="22"></th>
 
-    <th><input type="submit" value="Add host to DB"></th>
-    </table>
-</form>
 
 
 
