@@ -1,2 +1,4 @@
 /hosts.db
 /auth.db
+/.idea
+/__pycache__
