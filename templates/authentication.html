@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+
+
+{% endblock %}
+{% block body %}
+
+    <div id="authentication">
+        <h2>Enter Username, password and secret</h2>
+        <table>
+            <tr>
+                <th>Nickname for this auth pair</th>
+                <th>Username</th>
+                <th>password</th>
+                <th>Secret(if cisco IOS)</th>
+                <th>Submit</th>
+            </tr>
+        <form action="/authentication/" method="POST">
+            <td><input type="text" name="nickname" id="nickname"></td>
+            <td><input type="text" name="username" id="username"></td>
+            <td><input type="password" name="password" id="password"></td>
+            <td><input type="password" name="secret" id="secret"></td>
+            <td><input type="submit" value="Add username/password/secret"></td>
+        </form>
+        </table>
+
+    </div>
+<div id="authentication">
+
+
+
+    <h1>Auth details</h1>
+    {% if authdetails|length < 1 %}
+    <h4>There are no auth details added. creat a set.</h4>
+
+    {% else %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nickname</th>
+            <th>Username</th>
+            <th>password</th>
+            <th>Secret</th>
+            <th>Actions</th>
+        </tr>
+        {% for authdetails in authdetails %}
+        <tr>
+            <td>{{ authdetails.id }}</td>
+            <td>{{ authdetails.nickname }}</td>
+            <td>{{ authdetails.username }}</td>
+            <td> ******</td>
+            <td> ******</td>
+
+
+
+            <td>
+                <a href="/auth_delete/{{authdetails.id}}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+{% endblock %}

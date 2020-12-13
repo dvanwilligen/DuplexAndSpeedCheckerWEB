@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"
+    {% block head %}{% endblock %}
+</head>
+    <body>
+        <div id="page-container">
+            <div id="content-wrap">
+                <header id="header">
+                    <h1>DuplexAndSpeedCheckerWEB</h1>
+                </header>
+                <div id="maincontent">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+            <footer id="footer">
+                <div id="footerdiv">
+                    <table>
+                        <tr>
+                            <th><p><b><i>Designed by a Dutch idiot in Marseille.</i></b></p></th>
+                            <th><p><a id="footerlinks" href="https://github.com/dvanwilligen/DuplexAndSpeedCheckerWEB">GitHub</a></p></th>
+                            <th><p><a id="footerlinks" href="https://softwaredefinednetworkengineer.com">Blog</a></p></th>
+                            <th><p><a id="footerlinks" href="https://hub.docker.com/repository/docker/dvanwilligen/duplexandspeedcheckerweb">DockerHub</a></p></th>
+                        </tr>
+                    </table>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

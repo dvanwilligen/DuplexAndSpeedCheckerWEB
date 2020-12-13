@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+
+
+{% endblock %}
+{% block body %}
+
+<div id="hosts">
+
+
+
+    <h1>Hosts, IP or DNS name</h1>
+    {% if hosts|length < 1 %}
+    <h4>There are no hosts added. create one.</h4>
+
+    {% else %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Hostname</th>
+            <th>DeviceType</th>
+            <th>Port</th>
+            <th>Actions</th>
+        </tr>
+        {% for host in hosts %}
+        <tr>
+            <td>{{ host.id }}</td>
+            <td>{{ host.hostname }}</td>
+            <td>{{ host.devicetype }}</td>
+            <td>{{ host.port }}</td>
+            <td>
+                <a href="/host_delete/{{host.id}}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+<form action="/hosts/" method="POST">
+    <table>
+    <th><input type="text" name="newhost" id="newhost"></th>
+        <th><select id="devicetype" name="devicetype"><option value="cisco_ios">cisco ios</option><option value="junos">junos</option></select></th>
+    <th><input type="text" name="port" id="port" value="22"></th>
+
+    <th><input type="submit" value="Add host to DB"></th>
+    </table>
+</form>
+
+
+
+</div>
+</div>
+
+
+
+{% endblock %}
+

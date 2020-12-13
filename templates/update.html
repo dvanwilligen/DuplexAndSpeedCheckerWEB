@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+
+
+{% endblock %}
+{% block body %}
+
+<div class="content">
+    <h1> Update host</h1>
+
+
+<form action="/update/{{hosts.id}}" method="POST">
+    <input type="text" name="updatehost" id="updatehost" value="{{hosts.hostname}}">
+    <input type="submit" value="Update">
+</form>
+
+
+
+
+</div>
+
+
+
+{% endblock %}
