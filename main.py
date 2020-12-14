@@ -16,6 +16,7 @@ class HostDB(db.Model):
     hostname = db.Column(db.String(200), nullable=False)
     devicetype = db.Column(db.String(20), nullable=False)
     port = db.Column(db.Integer, nullable=False)
+    authpair = db.Column(db.String(200), nullable=True)
 
     def __repr__(self):
         return '%r,%r,%r,%r' % (self.id, self.hostname, self.devicetype, self.port)
@@ -57,6 +58,7 @@ def index_authentication():
         try:
             db.session.add(db_push)
             db.session.commit()
+
             return redirect('/authentication/')
         except Exception as e:
             return str(e)
@@ -74,12 +76,7 @@ def index_hosts():
         devicetype_to_add = request.form['devicetype']
         port_to_add = int(request.form['port'])
 
-        print(host_to_add)
-        print(devicetype_to_add)
-        print(port_to_add)
-
         db_push_host = (HostDB(hostname=host_to_add, devicetype=devicetype_to_add, port=port_to_add))
-        print(db_push_host)
         try:
             db.session.add(db_push_host)
             db.session.commit()
@@ -91,13 +88,29 @@ def index_hosts():
         hosts = HostDB.query.order_by(HostDB.id).all()
         return render_template('hosts.html', hosts=hosts)
 
-
-@app.route('/setup', methods=['POST', 'GET'])
+@app.route('/setup/', methods=['POST', 'GET'])
 def setup():
-    hosts = HostDB.query.order_by(HostDB.id).all()
-    AuthDetails = AuthDB.query.order_by(AuthDB.id).all()
-    Setup = SetupDB.query.order_by(SetupDB.id).all()
-    return render_template('setup.html', authdetails=AuthDetails, hosts=hosts, setup=Setup)
+    if request.method == 'POST':
+        setuparray = []
+        setupcount = 1
+        for each in HostDB.query.all():
+            setuparray.append(str(request.form[str(setupcount)]))
+            setupcount += 1
+        try:
+            for x in range((len(setuparray))):
+                auth_to_add = HostDB.query.filter_by(id=x+1).first()
+                auth_to_add.authpair = setuparray[x]
+            db.session.commit()
+            return redirect('/setup')
+        except Exception as e:
+            return str(e)
+
+        return redirect('/setup/')
+    else:
+        hosts = HostDB.query.order_by(HostDB.id).all()
+        AuthDetails = AuthDB.query.order_by(AuthDB.id).all()
+        Setup = SetupDB.query.order_by(SetupDB.id).all()
+        return render_template('setup.html', authdetails=AuthDetails, hosts=hosts, setup=Setup)
 
 
 @app.route('/auth_delete/<int:id>')
