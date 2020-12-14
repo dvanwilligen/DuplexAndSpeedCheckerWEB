@@ -14,7 +14,7 @@
         {% elif hosts|length < 1 %}
     <h4 id="error">There are no hosts added. Add hosts first.</h4>
         {% else %}
-
+<form action="/setup/" method="POST">
     <table class="table">
         <tr>
         <th>Hostname</th>
@@ -23,7 +23,7 @@
         <tr>
         {% for hosts in hosts %}
         <td>{{ hosts.hostname }}</td>
-        <td><select id="{{ hosts.id }}" name="{{ hosts.id }}">
+        <td><select id="{{ hosts.id }}" name="{{ hosts.id }}" >
             {% for authdetails in authdetails %}
             <option value="{{ authdetails.nickname }}">{{ authdetails.nickname }}</option>
             {% endfor %}
@@ -31,9 +31,44 @@
         </select>
         </tr>
         {% endfor %}
+        <tr><input type="submit" value="config auth pairs"></tr>
     </table>
-
+</form>
 </div>
         {% endif %}
+<div id="hosts3">
+
+
+
+    <h1>Hosts, IP or DNS name</h1>
+    {% if hosts|length < 1 %}
+    <h4>There are no hosts added. create one.</h4>
+
+    {% else %}
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>Hostname</th>
+            <th>DeviceType</th>
+            <th>Port</th>
+            <th>Authpair</th>
+            <th>Actions</th>
+        </tr>
+        {% for host in hosts %}
+        <tr>
+            <td>{{ host.id }}</td>
+            <td>{{ host.hostname }}</td>
+            <td>{{ host.devicetype }}</td>
+            <td>{{ host.port }}</td>
+            <td>{{ host.authpair }} </td>
+            <td>
+                <a href="/host_delete/{{host.id}}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+
 {% endblock %}
 
