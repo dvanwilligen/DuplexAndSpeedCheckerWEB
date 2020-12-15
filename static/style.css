@@ -41,6 +41,13 @@ text-align: center;
 background-color: #0000ff;
 overflow: hidden;
 }
+#launch {
+width: 30%;
+height: 100px;
+text-align: center;
+background-color: #9003fc;
+overflow: hidden;
+}
 
 #authentication2 {
 width: 100%;
