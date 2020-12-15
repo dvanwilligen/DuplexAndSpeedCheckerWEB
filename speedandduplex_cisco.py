@@ -7,7 +7,7 @@ def speedandduplex_cisco(hostname, username, password, secret, port):
     password = password.strip('\n\t')
     secret = secret.strip('\n\t')
     port = int(port.strip('\n\t'))
-
+    print("test")
     CurrentDeviceDef = {
         'device_type': 'cisco_ios',
         'host': hostname,

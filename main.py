@@ -4,7 +4,7 @@ from datetime import datetime
 from speedandduplex_cisco import speedandduplex_cisco
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_BINDS'] = { 'main' : 'sqlite:///hosts.db', 'auth' : 'sqlite:///auth.db' }
+app.config['SQLALCHEMY_BINDS'] = { 'main' : 'sqlite:///hosts.db', 'auth' : 'sqlite:///auth.db', 'results' : 'sqlite:///results.db' }
 
 db = SQLAlchemy(app)
 
@@ -47,7 +47,7 @@ class ResultsDB(db.Model):
     type = db.Column(db.String(200))
 
     def __repr__(self):
-        return '%r,%r,%r,%r,%r' % ( self.id, self.nickname, self.username, self.password, self.secret)
+        return '%r,%r,%r,%r,%r,%r,%r,%r,%r,%r' % (self.id, self.resulttime, self.hostname, self.port, self.name, self.status, self.vlan, self.speed, self.duplex, self.type)
 
 
 
@@ -75,7 +75,6 @@ def index_authentication():
         except Exception as e:
             return str(e)
     else:
-        #AuthDetails = AuthDB.query.order_by(AuthDB.id).all()
         AuthDetails = AuthDB.query.order_by(AuthDB.id).all()
     return render_template('authentication.html', authdetails=AuthDetails)
 
@@ -124,16 +123,25 @@ def setup():
         return render_template('setup.html', authdetails=AuthDetails, hosts=hosts)
 
 
-@app.route('/launch/', methods= ['POST', 'GET'])
+@app.route('/launch/', methods=['POST', 'GET'])
 def launch():
     if request.method == 'POST':
-        Devices_to_check = HostDB.query.order_by(HostDB.id).all()
+        now = datetime.now()
+        Devices = HostDB.query.order_by(HostDB.id).all()
+        Devices_to_check = []
+        for each in Devices:
+            Devices_to_check.append(each)
+
+        print(Devices_to_check)
         for iteration, each in enumerate(Devices_to_check):
+            CurrentDevice = []
             CurrentDevice = HostDB.query.filter_by(id=iteration).first
-            hostname = CurrentDevice.hostname
-            devicetype = CurrentDevice.devicetype
-            port = CurrentDevice.port
-            authpair = CurrentDevice.authpair
+            print(CurrentDevice)
+            print(type(CurrentDevice))
+            hostname = CurrentDevice[1]
+            devicetype = CurrentDevice[2]
+            port = CurrentDevice[3]
+            authpair = CurrentDevice[4]
 
             if devicetype == 'cisco_ios':
                 credStage = AuthDB.query.filter_by(nickname=authpair).first()
@@ -141,7 +149,6 @@ def launch():
                 password = credStage.password
                 secret = credStage.secret
                 output1 = speedandduplex_cisco(hostname, username, password, secret, port)
-                now = datetime.now()
                 output1 = output1.splitlines()
                 FinalOutput = []
                 for line in output1:
@@ -151,15 +158,18 @@ def launch():
                     if each[0] == 'Port':
                         pass
                     else:
-                        db_push = (ResultsDB(resulttime=now, hostname=hostname, port=each[0], name=each[1],status=each[2], vlan=each[3], duplex=each[4], speed=each[5], type=each[6])
+                        db_push = (ResultsDB(resulttime=now, hostname=hostname, port=each[0], name=each[1],status=each[2], vlan=each[3], duplex=each[4], speed=each[5], type=each[6]))
                         db.session.add(db_push)
-                        db.session.commit
+                        db.session.commit()
             else:
                 print("device type not supported yet")
+        results = ResultsDB.query.filter_by(resulttime=now)
+
+        return render_template('/index.html', results=results, now=now)
 
     else:
         pass
-    return render_template('/')
+    return render_template('/index.html')
 
 
 

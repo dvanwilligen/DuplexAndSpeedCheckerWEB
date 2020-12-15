@@ -10,9 +10,47 @@
 <div id="authentication">
     <a href="/authentication"><h1>1. Authentication</h1></a>
 </div>
-<div id="spacer">
+<div id="results">
 
+    <h1>Results</h1>
+    {% if results|length < 1 %}
+    <h4>There are no results yet</h4>
+
+    {% else %}
+    <table class="table">
+        <tr>
+            <th>Time of test</th>
+            <th>Hostname</th>
+            <th>Port</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Vlan</th>
+            <th>Duplex</th>
+            <th>Speed</th>
+            <th>Type</th>
+        </tr>
+        {% for results in results %}
+        <tr>
+            <td>{{ results.resulttime }}</td>
+            <td>{{ results.hostname }}</td>
+            <td>{{ results.port }}</td>
+            <td>{{ results.name }}</td>
+            <td>{{ results.Status }}</td>
+            <td>{{ results.vlan }}</td>
+            <td>{{ results.duplex }}</td>
+            <td>{{ results.speed }}</td>
+            <td>{{ results.type }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+
+
+
+</>
 </div>
+
 <div id="hosts">
     <a href="/hosts"><h1>2. Hosts</h1></a>
 </div>
@@ -23,13 +61,12 @@
     <a href="/setup"><h1>3. Setup</h1></a>
 </div>
 <div id="launch">
-    <a href="/launch"><h1>4. Launch</h1></a>
+    <a href="/launch"><h1><form action="/launch/" method="POST"><input type="submit" value="4. Launch"></input></form></h1></a>
 </div>
 <div id="launch">
     <a href="/launch"><h1>4. Launch</h1></a>
 </div>
-<div id="results">
-</div>
+
 
 
 
