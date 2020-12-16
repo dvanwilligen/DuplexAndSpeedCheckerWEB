@@ -127,21 +127,16 @@ def setup():
 def launch():
     if request.method == 'POST':
         now = datetime.now()
-        Devices = HostDB.query.order_by(HostDB.id).all()
-        Devices_to_check = []
-        for each in Devices:
-            Devices_to_check.append(each)
+        amountRows = HostDB.query.order_by(HostDB.id).count()
+        rowscount = 1
 
-        print(Devices_to_check)
-        for iteration, each in enumerate(Devices_to_check):
-            CurrentDevice = []
-            CurrentDevice = HostDB.query.filter_by(id=iteration).first
-            print(CurrentDevice)
-            print(type(CurrentDevice))
-            hostname = CurrentDevice[1]
-            devicetype = CurrentDevice[2]
-            port = CurrentDevice[3]
-            authpair = CurrentDevice[4]
+        while rowscount <= amountRows:
+            data = HostDB.query.filter_by(id=rowscount).first()
+            hostname = data.hostname
+            devicetype = data.devicetype
+            port = data.port
+            authpair = data.authpair
+            rowscount += 1
 
             if devicetype == 'cisco_ios':
                 credStage = AuthDB.query.filter_by(nickname=authpair).first()
@@ -149,18 +144,30 @@ def launch():
                 password = credStage.password
                 secret = credStage.secret
                 output1 = speedandduplex_cisco(hostname, username, password, secret, port)
-                output1 = output1.splitlines()
+
                 FinalOutput = []
                 for line in output1:
-                    line = line.split()
                     FinalOutput.append(line)
+
                 for each in FinalOutput:
-                    if each[0] == 'Port':
+                    if 'Port' in each[0]:
                         pass
                     else:
+                        print(each)
+                        print(each[0])
+                        print(each[1])
+                        print(each[2])
+                        print(each[3])
+                        print(each[4])
+                        print(each[5])
+                        print(each[6])
+
+                        ## problem is that if int descr is empty, each is len(5) instead of len(6)!!!!
+
                         db_push = (ResultsDB(resulttime=now, hostname=hostname, port=each[0], name=each[1],status=each[2], vlan=each[3], duplex=each[4], speed=each[5], type=each[6]))
                         db.session.add(db_push)
                         db.session.commit()
+
             else:
                 print("device type not supported yet")
         results = ResultsDB.query.filter_by(resulttime=now)
